@@ -18,13 +18,13 @@ import { router as notesRouter } from './routes/notes.mjs';
 
 // Debug
 import { default as DBG } from 'debug';
-export const debug = DBG('notes:debug');
-export const debugerror = DBG('notes:error');
+export const debug = DBG('notes:app-debug');
+export const debugerror = DBG('notes:app-error');
 
 // Notes
 import { useModel as useNotesModel } from './models/notes-store.mjs';
 useNotesModel(process.env.NOTES_MODEL || "memory")
-    .then(store => { debug(`${JSON.stringify(store)} is imported successfully within app.mjs`) })
+    .then(store => { })
     .catch(err => { onError({ code: 'ENOTESSTORE', err }); });
 
 export const app = express();

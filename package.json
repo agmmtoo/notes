@@ -4,10 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./app.mjs",
-    "fs-server1": "NOTES_MODEL=fs PORT=3001 DEBUG=notes:* node ./app.mjs",
-    "fs-server2": "NOTES_MODEL=fs PORT=3002 DEBUG=notes:* node ./app.mjs",
-    "mem-server1": "NOTES_MODEL=memory PORT=3003 DEBUG=notes:* node ./app.mjs",
-    "mem-server2": "NOTES_MODEL=memory PORT=3004 DEBUG=notes:* node ./app.mjs"
+    "level-start": "DEBUG=notes:* PORT=3000 NOTES_MODEL=level node ./app.mjs"
   },
   "dependencies": {
     "bootstrap": "4.5.x",

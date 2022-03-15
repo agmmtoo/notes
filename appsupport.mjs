@@ -3,6 +3,8 @@ import createError from 'http-errors';
 import { port, server } from './app.mjs';
 import { debug, debugerror } from './app.mjs';
 
+import { NotesStore } from './models/notes-store.mjs';
+
 export function normalizePort(val) {
     const port = parseInt(val, 10);
     if (isNaN(port)) {
@@ -71,3 +73,17 @@ export function basicErrorHandler(err, req, res, next) {
 process.on('uncaughtException', err => console.error(`For I've crashed!!! - ${err.stack || err}`));
 import * as util from 'util';
 process.on('unhandledRejection', (reason, p) => console.error(`Unhandled rejection at: ${util.inspect(p)} reason: ${util.inspect(reason)}`));
+
+async function catchProcessDeath(signal) {
+    debug(`${signal}? urk...`);
+    await NotesStore.close();
+    await server.close();
+    process.exit(0);
+}
+
+process.on('SIGTERM', catchProcessDeath);
+process.on('SIGINT', catchProcessDeath);
+process.on('SIGHUP', catchProcessDeath);
+// process.on('SIGKILL', catchProcessDeath);
+
+process.on('exit', () => { debug('exiting...'); });
