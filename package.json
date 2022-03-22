@@ -3,23 +3,37 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./app.mjs",
-    "level-start": "DEBUG=notes:* PORT=3000 NOTES_MODEL=level node ./app.mjs"
+    "start": "DEGUG=notes:* SEQUELIZE_CONNECT=models/sequelize-sqlite.yaml NOTES_MODEL=sequelize USER_SERVICE_URL=http://localhost:5858 node ./app.mjs",
+    "level-start": "DEBUG=notes:* PORT=3000 NOTES_MODEL=level node ./app.mjs",
+    "sqlite3-setup": "sqlite3 notes.sqlite3 --init models/schema-sqlite3.sql",
+    "sqlite3-start": "DEBUG=notes:* SQLITE_FILE=notes.sqlite3 NOTES_MODEL=sqlite3 node ./app.mjs",
+    "sqlite3-server1": "DEBUG=notes:* SQLITE_FILE=notes.sqlite3 NOTES_MODEL=sqlite3 PORT=3001 node ./app.mjs",
+    "sequelize-server1": "DEGUG=notes:* SEQUELIZE_CONNECT=models/sequelize-sqlite.yaml NOTES_MODEL=sequelize PORT=3001 node ./app.mjs",
+    "mongodb-start": "DEGUG=notes:* MONGO_URL=mongodb://localhost:27017/ MONGODB_NAME=notesmongodb NOTES_MODEL=mongodb node ./app.mjs",
+    "mongodb-server1": "DEGUG=notes:* MONGO_URL=mongodb://localhost:27017/ MONGODB_NAME=notesmongodb NOTES_MODEL=mongodb PORT=3001 node ./app.mjs"
   },
   "dependencies": {
     "bootstrap": "4.5.x",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
+    "express-session": "1.17.x",
     "feather-icons": "4.25.x",
     "fs-extra": "../../offline/fs-extra-10.0.1.tgz",
     "hbs": "~4.0.4",
     "http-errors": "~1.6.3",
     "jquery": "3.5.x",
+    "js-yaml": "3.13.x",
     "level": "6.x",
+    "mongodb": "3.x",
     "morgan": "~1.9.1",
+    "passport": "^0.4.x",
+    "passport-local": "1.x",
     "popper.js": "1.16.x",
     "rotating-file-stream": "^3.0.3",
-    "sqlite3": "5.x"
+    "sequelize": "6.x",
+    "session-file-store": "1.4.x",
+    "sqlite3": "5.x",
+    "superagent": "^5.2.x"
   }
 }

@@ -15,6 +15,13 @@ import { normalizePort, onError, onListening, handle404, basicErrorHandler } fro
 // router
 import { router as indexRouter } from './routes/index.mjs';
 import { router as notesRouter } from './routes/notes.mjs';
+import { router as usersRouter, initPassport } from './routes/users.mjs';
+
+// Session
+import session from 'express-session';
+import sessionFileStore from 'session-file-store';
+const FileStore = sessionFileStore(session);
+export const sessionCookieName = 'notescookie.sid' // default: connect.sid
 
 // Debug
 import { default as DBG } from 'debug';
@@ -48,6 +55,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+// session: error if it's not here, 
+app.use(session({
+    store: new FileStore({ path: "sessions" }),
+    secret: 'keyboard mouse',
+    resave: true,
+    saveUninitialized: true,
+    name: sessionCookieName
+}));
+initPassport(app);
+
 // static and libs
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/assets/vendor/bootstrap', express.static(path.join(__dirname, 'node_modules', 'bootstrap', 'dist')));
@@ -58,6 +75,7 @@ app.use('/assets/vendor/feather-icons', express.static(path.join(__dirname, 'nod
 // router function lists
 app.use('/', indexRouter);
 app.use('/notes', notesRouter);
+app.use('/users', usersRouter);
 
 // error handlers
 // catch 404 and forward to error handler

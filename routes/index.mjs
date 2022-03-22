@@ -9,7 +9,7 @@ router.get('/', async (req, res, next) => {
     // console.log(`keylist ${util.inspect(keylist)}`);
     const keyPromises = keylist?.map(key => notes.read(key));
     const notelist = await Promise.all(keyPromises);
-    res.render('index', { title: 'Notes', notelist: notelist });
+    res.render('index', { title: 'Notes', notelist: notelist, user: req.user ? req.user : undefined });
   } catch (err) {
     next(err);
   }
