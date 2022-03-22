@@ -1,3 +1,13 @@
+# db
+notes-fs-data/*
+notes.level/*
+data/*
+sessions/*
+logs.txt
+notes-sequelize.sqlite3
+notes.sqlite3
+
+
 # Logs
 logs
 *.log
