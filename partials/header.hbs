@@ -14,7 +14,10 @@
     </button>
     {{#if user}}
       <div class="collapse navbar-collapse" id="navbarLogin">
-        <span class="navbar-text text-dark col">{{title}}</span>
+        <span
+          class="navbar-text text-dark col"
+          id="navbartitle"
+        >{{title}}</span>
         <a class="btn btn-black col-auto" href="/users/logout">
           Log Out
           <span class="badge badge-light">{{user.username}}</span>

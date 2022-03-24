@@ -8,13 +8,17 @@ import { default as rfs } from 'rotating-file-stream';
 import { default as cookieParser } from 'cookie-parser';
 import { createServer } from 'http';
 
+// socket
+import socketio from 'socket.io';
+import passportSocketIo from 'passport.socketio';
+
 // local
 import { approotdir } from './approotdir.mjs';
 const __dirname = approotdir;
 import { normalizePort, onError, onListening, handle404, basicErrorHandler } from './appsupport.mjs';
 // router
-import { router as indexRouter } from './routes/index.mjs';
-import { router as notesRouter } from './routes/notes.mjs';
+import { router as indexRouter, init as homeInit } from './routes/index.mjs';
+import { router as notesRouter, init as notesInit } from './routes/notes.mjs';
 import { router as usersRouter, initPassport } from './routes/users.mjs';
 
 // Session
@@ -22,6 +26,8 @@ import session from 'express-session';
 import sessionFileStore from 'session-file-store';
 const FileStore = sessionFileStore(session);
 export const sessionCookieName = 'notescookie.sid' // default: connect.sid
+const sessionStore = new FileStore({ path: "sessions" });
+const sessionSecret = 'keyboard mouse';
 
 // Debug
 import { default as DBG } from 'debug';
@@ -31,10 +37,36 @@ export const debugerror = DBG('notes:app-error');
 // Notes
 import { useModel as useNotesModel } from './models/notes-store.mjs';
 useNotesModel(process.env.NOTES_MODEL || "memory")
-    .then(store => { })
+    .then(store => {
+        debug(`in app.mjs, we got ${store} class as notestore, routes' init funcs init here.`);
+        homeInit();
+        notesInit();
+    })
     .catch(err => { onError({ code: 'ENOTESSTORE', err }); });
 
 export const app = express();
+// PORT setup
+export const port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
+
+// server setup
+export const server = createServer(app);
+server.listen(port);
+server.on('request', (req, res) => {
+    debug(`${new Date().toISOString()} request ${req.method} ${req.url}`);
+});
+server.on('error', onError);
+server.on('listening', onListening);
+
+// SOCKET
+export const io = socketio(server);
+
+// io.use(passportSocketIo.authorize({
+//     cookieParser: cookieParser,
+//     key: sessionCookieName,
+//     secrect: sessionSecret,
+//     store: sessionStore
+// }));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -57,8 +89,8 @@ app.use(cookieParser());
 
 // session: error if it's not here, 
 app.use(session({
-    store: new FileStore({ path: "sessions" }),
-    secret: 'keyboard mouse',
+    store: sessionStore,
+    secret: sessionSecret,
     resave: true,
     saveUninitialized: true,
     name: sessionCookieName
@@ -82,18 +114,3 @@ app.use('/users', usersRouter);
 app.use(handle404);
 // other errors
 app.use(basicErrorHandler);
-
-// PORT setup
-export const port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);
-
-// server setup
-export const server = createServer(app);
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
-
-// DEBUG LOG
-server.on('request', (req, res) => {
-    debug(`${new Date().toISOString()} request ${req.method} ${req.url}`);
-});

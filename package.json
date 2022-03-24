@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "DEGUG=notes:* SEQUELIZE_CONNECT=models/sequelize-sqlite.yaml NOTES_MODEL=sequelize USER_SERVICE_URL=http://localhost:5858 node ./app.mjs",
+    "start": "DEGUG=notes:*,socket.io:*,engine.io:* SEQUELIZE_CONNECT=models/sequelize-sqlite.yaml NOTES_MODEL=sequelize USER_SERVICE_URL=http://localhost:5858 REQUEST_LOG_FILE=logs/morgan_with_rotating-file-stream.log node ./app.mjs",
     "level-start": "DEBUG=notes:* PORT=3000 NOTES_MODEL=level node ./app.mjs",
     "sqlite3-setup": "sqlite3 notes.sqlite3 --init models/schema-sqlite3.sql",
     "sqlite3-start": "DEBUG=notes:* SQLITE_FILE=notes.sqlite3 NOTES_MODEL=sqlite3 node ./app.mjs",
@@ -29,10 +29,12 @@
     "morgan": "~1.9.1",
     "passport": "^0.4.x",
     "passport-local": "1.x",
+    "passport.socketio": "3.7.x",
     "popper.js": "1.16.x",
     "rotating-file-stream": "^3.0.3",
     "sequelize": "6.x",
     "session-file-store": "1.4.x",
+    "socket.io": "2.x",
     "sqlite3": "5.x",
     "superagent": "^5.2.x"
   }
